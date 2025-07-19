@@ -4,10 +4,63 @@ keytool -genkeypair -alias lic.ca -keyalg RSA -keysize 2048 -sigalg SHA256withRS
 ```
 
 ## Generating a new certificate & key
-curl -X POST "http://localhost:18080/certificates/generate?commonName=my-customer&validityDays=365"
+curl -X POST "http://localhost:18080/certificates/generate?commonName=test-jwt-cert&validityDays=365"
 
 ## Listing generated certificates
 curl http://localhost:18080/certificates
 
+## Singaturing JWT with generated certificate
+curl -X POST -H "Content-Type: application/json" \
+-d '{
+"commonName": "test-jwt-cert",
+"claims": {test-jwt-cert
+"sub": "1234567890",
+"name": "John Doe",
+"iat": 1516239022
+}
+}' \
+http://localhost:18080/certificates/sign-jwt
+
+### Return value example 
+```
+curl -X POST -H "Content-Type: application/json" \
+     -d '{
+       "commonName": "test-jwt-cert",
+       "claims": {
+         "sub": "1234567890",
+         "name": "John Doe",
+         "iat": 1516239022
+       }
+     }' \
+   http://localhost:18080/certificates/sign-jwt
+eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.ZTRVPxGvX7vu7k63qagCRMbnnDx9obHFCBf3Wx8Z3PrcLuEU15W3gr_Dw80dAHYBLYx5YuOF-YzgvZ7UCf9QuFfz3DT2IQZJXLXIVfIIkQjhjy7l_m02rP21bXU-FvFFGsGUC9TNo9aW3epjEYeRbzPpKCdPdgDjQVxoZrJD8SoydDemoi-IJDRjiPEtu5cYqyK9gYi0uzjvInRGxifsLdARreB-wXYW8uHoh3RaTLE0B7cgq9eQe-90U0Gcbti-AS4DIyUyRcyO8XkhwqtfFVEWF_bBuUwt6ml5R4L3TkR13j_rP_Ll7QNQe_Rez4HKXyRLKPJ5aOq6oh6-doSKQw
+```
+
+### Decoding returned JWT
+```
+$ python3 decode_jwt.py eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.ZTRVPxGvX7vu7k63qagCRMbnnDx9obHFCBf3Wx8Z3PrcLuEU15W3gr_Dw80dAHYBLYx5YuOF-YzgvZ7UCf9QuFfz3DT2IQZJXLXIVfIIkQjhjy7l_m02rP21bXU-FvFFGsGUC9TNo9aW3epjEYeRbzPpKCdPdgDjQVxoZrJD8SoydDemoi-IJDRjiPEtu5cYqyK9gYi0uzjvInRGxifsLdARreB-wXYW8uHoh3RaTLE0B7cgq9eQe-90U0Gcbti-AS4DIyUyRcyO8XkhwqtfFVEWF_bBuUwt6ml5R4L3TkR13j_rP_Ll7QNQe_Rez4HKXyRLKPJ5aOq6oh6-doSKQw
+--- JWT Decoded ---
+
+[Header]
+{
+  "alg": "RS256"
+}
+
+[Payload]
+{
+  "sub": "1234567890",
+  "name": "John Doe",
+  "iat": 1516239022
+}
+
+[Signature (Encoded)]
+ZTRVPxGvX7vu7k63qagCRMbnnDx9obHFCBf3Wx8Z3PrcLuEU15W3gr_Dw80dAHYBLYx5YuOF-YzgvZ7UCf9QuFfz3DT2IQZJXLXIVfIIkQjhjy7l_m02rP21bXU-FvFFGsGUC9TNo9aW3epjEYeRbzPpKCdPdgDjQVxoZrJD8SoydDemoi-IJDRjiPEtu5cYqyK9gYi0uzjvInRGxifsLdARreB-wXYW8uHoh3RaTLE0B7cgq9eQe-90U0Gcbti-AS4DIyUyRcyO8XkhwqtfFVEWF_bBuUwt6ml5R4L3TkR13j_rP_Ll7QNQe_Rez4HKXyRLKPJ5aOq6oh6-doSKQw
+
+Note: The signature is a cryptographic hash and is not decoded.
+--- End ---
+```
+
+
 ## Delete 
 curl -X DELETE http://localhost:18080/certificates/cert-to-delete
+

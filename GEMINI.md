@@ -3,7 +3,7 @@
 This document summarizes the current state and key changes made to the `hello_springboot` project.
 
 ## Project Overview
-The project has been transformed into a Spring Boot application acting as a Certificate Authority (CA) server. It can issue and manage X.509 certificates.
+The project has been transformed into a Spring Boot application acting as a Certificate Authority (CA) server. It can issue and manage X.509 certificates, and also sign JSON Web Tokens (JWTs) using the generated certificates' private keys.
 
 ## Key Configurations and Features
 
@@ -30,6 +30,23 @@ The project has been transformed into a Spring Boot application acting as a Cert
         *   `commonName` (String, required): The common name for the new certificate.
         *   `validityDays` (long, optional, default: 365): The validity period in days.
 *   **DELETE `/certificates/{commonName}`**: Deletes a certificate and its private key from `certs/generated.jks` based on the provided `commonName`.
+*   **POST `/certificates/sign-jwt`**: Signs a set of JSON claims with the private key of a specified certificate and returns a complete JWS token.
+    *   **Request Body:**
+        ```json
+        {
+          "commonName": "your-certificate-common-name",
+          "claims": {
+            "sub": "1234567890",
+            "name": "John Doe",
+            "iat": 1516239022
+          }
+        }
+        ```
+
+## Utility Scripts
+
+*   **`decode_jwt.py`**: A Python 3 script to decode a JWT string and display its header and payload in a readable JSON format.
+    *   **Usage:** `python3 decode_jwt.py <jwt_string>`
 
 ## How to Run
 

@@ -47,4 +47,18 @@ public class CertificateController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting certificate: " + e.getMessage());
         }
     }
+
+    @PostMapping("/sign-jwt")
+    public ResponseEntity<?> signJwt(@RequestBody JwtSignRequest request) {
+        try {
+            String signedJwt = certificateService.signJwt(request.getCommonName(), request.getClaims());
+            return ResponseEntity.ok(signedJwt);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error signing JWT: " + e.getMessage());
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package org.license;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -135,6 +138,22 @@ public class CertificateService {
         generatedCertKeyStore.deleteEntry(commonName);
         saveGeneratedCertKeyStore();
         log.info("Certificate with commonName {} deleted from KeyStore.", commonName);
+    }
+
+    public String signJwt(String commonName, Map<String, Object> claims) throws Exception {
+        if (generatedCertKeyStore == null) {
+            throw new IllegalStateException("Generated certificates KeyStore is not loaded.");
+        }
+        if (!generatedCertKeyStore.containsAlias(commonName)) {
+            throw new IllegalArgumentException("Certificate with commonName " + commonName + " not found.");
+        }
+
+        PrivateKey privateKey = (PrivateKey) generatedCertKeyStore.getKey(commonName, generatedKeystorePassword.toCharArray());
+
+        return Jwts.builder()
+                .claims(claims)
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact();
     }
 
     public static class CertificateInfo {
