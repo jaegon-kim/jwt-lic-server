@@ -1,27 +1,24 @@
-## Generating License Server CA crt/key
+## Generating License Server's root CA keypair (ca.jks)
 ```
 keytool -genkeypair -alias lic.ca -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -dname "CN=License CA" -validity 36500 -keystore ca.jks -storepass changeit -keypass changeit -ext san=dns:localhost,ip:127.0.0.1
 ```
 
 ## Generating a new certificate & key
+```
 curl -X POST "http://localhost:18080/certificates/generate?commonName=test-jwt-cert&validityDays=365"
+```
 
 ## Listing generated certificates
+```
 curl http://localhost:18080/certificates
+```
+
+## Delete
+```
+curl -X DELETE http://localhost:18080/certificates/test-jwt-cert
+```
 
 ## Singaturing JWT with generated certificate
-curl -X POST -H "Content-Type: application/json" \
--d '{
-"commonName": "test-jwt-cert",
-"claims": {test-jwt-cert
-"sub": "1234567890",
-"name": "John Doe",
-"iat": 1516239022
-}
-}' \
-http://localhost:18080/certificates/sign-jwt
-
-### Return value example 
 ```
 curl -X POST -H "Content-Type: application/json" \
      -d '{
@@ -32,13 +29,11 @@ curl -X POST -H "Content-Type: application/json" \
          "iat": 1516239022
        }
      }' \
-   http://localhost:18080/certificates/sign-jwt
-eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.ZTRVPxGvX7vu7k63qagCRMbnnDx9obHFCBf3Wx8Z3PrcLuEU15W3gr_Dw80dAHYBLYx5YuOF-YzgvZ7UCf9QuFfz3DT2IQZJXLXIVfIIkQjhjy7l_m02rP21bXU-FvFFGsGUC9TNo9aW3epjEYeRbzPpKCdPdgDjQVxoZrJD8SoydDemoi-IJDRjiPEtu5cYqyK9gYi0uzjvInRGxifsLdARreB-wXYW8uHoh3RaTLE0B7cgq9eQe-90U0Gcbti-AS4DIyUyRcyO8XkhwqtfFVEWF_bBuUwt6ml5R4L3TkR13j_rP_Ll7QNQe_Rez4HKXyRLKPJ5aOq6oh6-doSKQw
+   http://localhost:18080/certificates/sign-jwt | xargs -0 python3 decode_jwt.py
 ```
 
-### Decoding returned JWT
+Decoded Result 
 ```
-$ python3 decode_jwt.py eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.ZTRVPxGvX7vu7k63qagCRMbnnDx9obHFCBf3Wx8Z3PrcLuEU15W3gr_Dw80dAHYBLYx5YuOF-YzgvZ7UCf9QuFfz3DT2IQZJXLXIVfIIkQjhjy7l_m02rP21bXU-FvFFGsGUC9TNo9aW3epjEYeRbzPpKCdPdgDjQVxoZrJD8SoydDemoi-IJDRjiPEtu5cYqyK9gYi0uzjvInRGxifsLdARreB-wXYW8uHoh3RaTLE0B7cgq9eQe-90U0Gcbti-AS4DIyUyRcyO8XkhwqtfFVEWF_bBuUwt6ml5R4L3TkR13j_rP_Ll7QNQe_Rez4HKXyRLKPJ5aOq6oh6-doSKQw
 --- JWT Decoded ---
 
 [Header]
@@ -60,7 +55,4 @@ Note: The signature is a cryptographic hash and is not decoded.
 --- End ---
 ```
 
-
-## Delete 
-curl -X DELETE http://localhost:18080/certificates/cert-to-delete
 
