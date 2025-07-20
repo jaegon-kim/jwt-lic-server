@@ -1,6 +1,11 @@
+JWT license server
+---
+
+# API usages
 ## Generating License Server's root CA keypair (ca.jks)
 ```
 keytool -genkeypair -alias lic.ca -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -dname "CN=License CA" -validity 36500 -keystore ca.jks -storepass changeit -keypass changeit -ext san=dns:localhost,ip:127.0.0.1
+keytool -list -v -keystore ./ca.jks -storepass changeit
 ```
 
 ## Generating a new certificate & key
@@ -24,9 +29,10 @@ curl -X POST -H "Content-Type: application/json" \
      -d '{
        "commonName": "test-jwt-cert",
        "claims": {
-         "sub": "1234567890",
-         "name": "John Doe",
-         "iat": 1516239022
+         "sub": "license",
+         "name": "Jey company",
+         "apps": ["app1", "app2"]
+         "expire" : "2025/12/31"
        }
      }' \
    http://localhost:18080/certificates/sign-jwt | xargs -0 python3 decode_jwt.py
