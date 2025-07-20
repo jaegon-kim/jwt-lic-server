@@ -43,6 +43,8 @@ The project has been transformed into a Spring Boot application acting as a Cert
           }
         }
         ```
+*   **GET `/certificates/ca-certificate/pem`**: (Handled by `JwtSigningController`) Returns the CA's public key certificate in X.509/PEM format.
+*   **GET `/certificates/{commonName}/pem`**: (Handled by `JwtSigningController`) Returns a generated certificate in X.509/PEM format based on the provided `commonName`.
 
 ## Utility Scripts
 

@@ -156,6 +156,16 @@ public class JwtSigningService {
                 .compact();
     }
 
+    public X509Certificate getCertificateByCommonName(String commonName) throws KeyStoreException {
+        if (generatedCertKeyStore == null) {
+            throw new IllegalStateException("Generated certificates KeyStore is not loaded.");
+        }
+        if (!generatedCertKeyStore.containsAlias(commonName)) {
+            throw new IllegalArgumentException("Certificate with commonName " + commonName + " not found.");
+        }
+        return (X509Certificate) generatedCertKeyStore.getCertificate(commonName);
+    }
+
     public static class CertificateInfo {
         private String commonName;
         private String keystorePath;

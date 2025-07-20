@@ -61,4 +61,15 @@ Note: The signature is a cryptographic hash and is not decoded.
 --- End ---
 ```
 
+## Getting CA's certificate with X.509/PEM 
+```
+curl http://localhost:18080/certificates/ca-certificate/pem
+curl http://localhost:18080/certificates/ca-certificate/pem | openssl x509 -text -noout
+```
+
+## Getting generated certificate with X.509/PEM
+```
+curl http://localhost:18080/certificates/test-jwt-cert/pem
+curl http://localhost:18080/certificates/test-jwt-cert/pem | openssl x509 -text -noout
+```
 
