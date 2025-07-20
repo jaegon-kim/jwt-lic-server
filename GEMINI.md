@@ -11,6 +11,7 @@ The project has been transformed into a Spring Boot application acting as a Cert
 *   **Java Version:** 22
 *   **Main Package:** `org.license`
 *   **Server Port:** 18080 (configured in `src/main/resources/application.properties`)
+*   **Services:** `JwtSigningService` (formerly `JwtCertificateService`)
 
 ### CA Functionality
 *   **CA KeyStore:** `certs/ca.jks`
@@ -24,13 +25,13 @@ The project has been transformed into a Spring Boot application acting as a Cert
 ### REST API Endpoints
 
 *   **GET `/hi`**: Returns "Hello World". (Initial test endpoint)
-*   **GET `/certificates`**: Lists all certificates currently stored in `certs/generated.jks`.
-*   **POST `/certificates/generate`**: Generates a new certificate and its private key, storing them in `certs/generated.jks`.
+*   **GET `/certificates`**: (Handled by `JwtSigningController`) Lists all certificates currently stored in `certs/generated.jks`.
+*   **POST `/certificates/generate`**: (Handled by `JwtSigningController`) Generates a new certificate and its private key, storing them in `certs/generated.jks`.
     *   **Parameters:**
         *   `commonName` (String, required): The common name for the new certificate.
         *   `validityDays` (long, optional, default: 365): The validity period in days.
-*   **DELETE `/certificates/{commonName}`**: Deletes a certificate and its private key from `certs/generated.jks` based on the provided `commonName`.
-*   **POST `/certificates/sign-jwt`**: Signs a set of JSON claims with the private key of a specified certificate and returns a complete JWS token.
+*   **DELETE `/certificates/{commonName}`**: (Handled by `JwtSigningController`) Deletes a certificate and its private key from `certs/generated.jks` based on the provided `commonName`.
+*   **POST `/certificates/sign-jwt`**: (Handled by `JwtSigningController`) Signs a set of JSON claims with the private key of a specified certificate and returns a complete JWS token.
     *   **Request Body:**
         ```json
         {

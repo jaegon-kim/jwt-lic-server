@@ -31,7 +31,7 @@ curl -X POST -H "Content-Type: application/json" \
        "claims": {
          "sub": "license",
          "name": "Jey company",
-         "apps": ["app1", "app2"]
+         "apps": ["app1", "app2"],
          "expire" : "2025/12/31"
        }
      }' \

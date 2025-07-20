@@ -27,9 +27,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class CertificateService {
+public class JwtSigningService {
 
-    private static final Logger log = LoggerFactory.getLogger(CertificateService.class);
+    private static final Logger log = LoggerFactory.getLogger(JwtSigningService.class);
 
     @Value("${generated.keystore.path}")
     private String generatedKeystorePath;
@@ -40,7 +40,7 @@ public class CertificateService {
     private final CaService caService;
     private KeyStore generatedCertKeyStore;
 
-    public CertificateService(CaService caService) {
+    public JwtSigningService(CaService caService) {
         this.caService = caService;
     }
 

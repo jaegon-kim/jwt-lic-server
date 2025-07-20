@@ -6,20 +6,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.license.JwtSigningService;
+
 @RestController
 @RequestMapping("/certificates")
-public class CertificateController {
+public class JwtSigningController {
 
-    private final CertificateService certificateService;
+    private final JwtSigningService jwtSigningService;
 
-    public CertificateController(CertificateService certificateService) {
-        this.certificateService = certificateService;
+    public JwtSigningController(JwtSigningService jwtSigningService) {
+        this.jwtSigningService = jwtSigningService;
     }
 
     @PostMapping("/generate")
     public ResponseEntity<?> generateCertificate(@RequestParam String commonName, @RequestParam(defaultValue = "365") long validityDays) {
         try {
-            CertificateService.CertificateInfo certInfo = certificateService.generateAndSaveCertificate(commonName, validityDays);
+            JwtSigningService.CertificateInfo certInfo = jwtSigningService.generateAndSaveCertificate(commonName, validityDays);
             return ResponseEntity.ok(certInfo);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -29,15 +31,15 @@ public class CertificateController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CertificateService.CertificateInfo>> getCertificates() {
-        List<CertificateService.CertificateInfo> certs = certificateService.getGeneratedCertificates();
+    public ResponseEntity<List<JwtSigningService.CertificateInfo>> getCertificates() {
+        List<JwtSigningService.CertificateInfo> certs = jwtSigningService.getGeneratedCertificates();
         return ResponseEntity.ok(certs);
     }
 
     @DeleteMapping("/{commonName}")
     public ResponseEntity<?> deleteCertificate(@PathVariable String commonName) {
         try {
-            certificateService.deleteCertificate(commonName);
+            jwtSigningService.deleteCertificate(commonName);
             return ResponseEntity.ok().body("Certificate " + commonName + " deleted successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -51,7 +53,7 @@ public class CertificateController {
     @PostMapping("/sign-jwt")
     public ResponseEntity<?> signJwt(@RequestBody JwtSignRequest request) {
         try {
-            String signedJwt = certificateService.signJwt(request.getCommonName(), request.getClaims());
+            String signedJwt = jwtSigningService.signJwt(request.getCommonName(), request.getClaims());
             return ResponseEntity.ok(signedJwt);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
