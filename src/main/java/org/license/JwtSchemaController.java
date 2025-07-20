@@ -59,14 +59,15 @@ public class JwtSchemaController {
     }
 
     @PostMapping("/verify-claims")
-    public ResponseEntity<?> verifyClaims(@RequestBody JwtClaimsVerificationRequest request) {
+    public ResponseEntity<ValidationResponse> verifyClaims(@RequestBody JwtClaimsVerificationRequest request) {
         try {
-            String result = jwtSchemaService.verifyClaimsWithSchema(request.getSchemaName(), request.getClaims());
-            return ResponseEntity.ok(result);
+            ValidationResponse response = jwtSchemaService.verifyClaimsWithSchema(request.getSchemaName(), request.getClaims());
+            return Respverify-claimsonseEntity.ok(response);
         } catch (java.io.IOException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Schema not found: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ValidationResponse(false, "Schema not found: " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error verifying claims: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ValidationResponse(false, "Error verifying claims: " + e.getMessage()));
         }
     }
 }
+

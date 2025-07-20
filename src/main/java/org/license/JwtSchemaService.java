@@ -76,7 +76,7 @@ public class JwtSchemaService {
         log.info("Schema '{}' deleted from {}", schemaName, schemaPath);
     }
 
-    public String verifyClaimsWithSchema(String schemaName, Map<String, Object> claims) throws IOException {
+    public ValidationResponse verifyClaimsWithSchema(String schemaName, Map<String, Object> claims) throws IOException {
         String schemaContent = getSchema(schemaName);
         JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012);
         JsonSchema jsonSchema = factory.getSchema(schemaContent);
@@ -85,12 +85,12 @@ public class JwtSchemaService {
         Set<ValidationMessage> validationMessages = jsonSchema.validate(jsonClaims);
 
         if (validationMessages.isEmpty()) {
-            return "Claims successfully validated against schema '" + schemaName + "'.";
+            return new ValidationResponse(true, "Claims successfully validated against schema '" + schemaName + "'.");
         } else {
-            return "Claims validation failed against schema '" + schemaName + "':\n" +
-                   validationMessages.stream()
+            List<String> errors = validationMessages.stream()
                            .map(ValidationMessage::getMessage)
-                           .collect(Collectors.joining("\n"));
+                           .collect(Collectors.toList());
+            return new ValidationResponse(false, "Claims validation failed against schema '" + schemaName + "'.", errors);
         }
     }
 }
