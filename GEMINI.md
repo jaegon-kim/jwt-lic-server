@@ -46,6 +46,18 @@ The project has been transformed into a Spring Boot application acting as a Cert
 *   **GET `/certificates/ca-certificate/pem`**: (Handled by `JwtSigningController`) Returns the CA's public key certificate in X.509/PEM format.
 *   **GET `/certificates/{commonName}/pem`**: (Handled by `JwtSigningController`) Returns a generated certificate in X.509/PEM format based on the provided `commonName`.
 
+*   **POST `/schemas/{schemaName}`**: (Handled by `JwtSchemaController`) Stores a JSON schema definition for claims validation.
+    *   **Parameters:**
+        *   `schemaName` (String, required): The name to assign to the schema.
+    *   **Request Body:** Raw JSON schema content.
+*   **GET `/schemas`**: (Handled by `JwtSchemaController`) Lists all stored JSON schema names.
+*   **GET `/schemas/{schemaName}`**: (Handled by `JwtSchemaController`) Retrieves a stored JSON schema definition.
+    *   **Parameters:**
+        *   `schemaName` (String, required): The name of the schema to retrieve.
+*   **DELETE `/schemas/{schemaName}`**: (Handled by `JwtSchemaController`) Deletes a stored JSON schema definition.
+    *   **Parameters:**
+        *   `schemaName` (String, required): The name of the schema to delete.
+
 ## Utility Scripts
 
 *   **`decode_jwt.py`**: A Python 3 script to decode a JWT string and display its header and payload in a readable JSON format.

@@ -79,3 +79,112 @@ curl http://localhost:18080/certificates/test-jwt-cert/pem
 curl http://localhost:18080/certificates/test-jwt-cert/pem | openssl x509 -text -noout
 ```
 
+## Registering JWT claims schema 
+```
+curl -X POST http://localhost:18080/schemas/test-jwt-claims-schema -H "Content-Type: application/json" -d '{
+  "type": "object",
+  "properties": {
+    "sub": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "apps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expire": {
+      "type": "string"
+    }
+  },
+  "required": ["sub", "name", "apps", "expire"]
+}' 
+```
+
+## Listing JWT claims schema 
+```
+$ curl -X GET http://localhost:18080/schemas
+```
+
+Result
+```
+["test-jwt-claims-schema"]
+```
+
+## Getting JWT claims schema
+```
+ curl -X GET http://localhost:18080/schemas/test-jwt-claims-schema
+```
+Result
+```
+{
+  "type": "object",
+  "properties": {
+    "sub": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "apps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expire": {
+      "type": "string"
+    }
+  },
+  "required": ["sub", "name", "apps", "expire"]
+}
+```
+
+## Deleting JWT claims schema
+```
+ curl -X DELETE http://localhost:18080/schemas/test-jwt-claims-schema
+```
+Result
+```
+Schema 'test-jwt-claims-schema' deleted successfully.
+```
+
+## Validating JWT claims with schema
+
+### Valid Claims
+```
+curl -X POST http://localhost:18080/schemas/verify-claims -H "Content-Type: application/json" -d '{
+  "schemaName": "test-jwt-claims-schema",
+  "claims": {
+    "sub": "license",
+    "name": "Jey company",
+    "apps": ["app1", "app2"],
+    "expire": "2025/12/31"
+  }
+}'
+```
+Result:
+```
+Claims successfully validated against schema 'test-jwt-claims-schema'.
+```
+
+### Invalid Claims (missing required fields)
+```
+curl -X POST http://localhost:18080/schemas/verify-claims -H "Content-Type: application/json" -d '{
+  "schemaName": "test-jwt-claims-schema",
+  "claims": {
+    "sub": "license",
+    "name": "Jey company"
+  }
+}'
+```
+Result:
+```
+Claims validation failed against schema 'test-jwt-claims-schema':
+$.apps: is missing but it is required
+$.expire: is missing but it is required
+```
+
