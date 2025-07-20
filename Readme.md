@@ -2,6 +2,12 @@ JWT license server
 ---
 
 # API usages
+
+## Swagger API
+``
+http://localhost:18080/swagger-ui/index.html
+``
+
 ## Generating License Server's root CA keypair (ca.jks)
 ```
 keytool -genkeypair -alias lic.ca -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -dname "CN=License CA" -validity 36500 -keystore ca.jks -storepass changeit -keypass changeit -ext san=dns:localhost,ip:127.0.0.1
