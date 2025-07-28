@@ -12,6 +12,7 @@ The project has been transformed into a Spring Boot application acting as a Cert
 *   **Main Package:** `org.license`
 *   **Server Port:** 18080 (configured in `src/main/resources/application.properties`)
 *   **Services:** `JwtSigningService` (formerly `JwtCertificateService`)
+*   **Database Driver:** `org.xerial:sqlite-jdbc` (SQLite JDBC Driver)
 
 ### CA Functionality
 *   **CA KeyStore:** `certs/ca.jks`
