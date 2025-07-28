@@ -62,7 +62,7 @@ public class JwtSchemaController {
     public ResponseEntity<ValidationResponse> verifyClaims(@RequestBody JwtClaimsVerificationRequest request) {
         try {
             ValidationResponse response = jwtSchemaService.verifyClaimsWithSchema(request.getSchemaName(), request.getClaims());
-            return Respverify-claimsonseEntity.ok(response);
+            return ResponseEntity.ok(response);
         } catch (java.io.IOException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ValidationResponse(false, "Schema not found: " + e.getMessage()));
         } catch (Exception e) {
