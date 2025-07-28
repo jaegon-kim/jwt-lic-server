@@ -7,7 +7,7 @@ The project has been transformed into a Spring Boot application acting as a Cert
 
 ## Key Configurations and Features
 
-*   **Spring Boot Version:** 3.5.3 (latest stable as of 2025-07-13)
+*   **Spring Boot Version:** 3.5.3
 *   **Java Version:** 22
 *   **Main Package:** `org.license`
 *   **Server Port:** 18080 (configured in `src/main/resources/application.properties`)
@@ -21,6 +21,11 @@ The project has been transformed into a Spring Boot application acting as a Cert
 *   **Generated Certificates KeyStore:** `certs/generated.jks`
     *   Stores all newly generated certificates and their corresponding private keys in JKS format.
     *   This KeyStore is created if it doesn't exist and is automatically saved upon certificate generation or deletion.
+
+### Database Configuration
+*   **Type:** SQLite
+*   **File:** `test.db` (configured in `src/main/resources/application.properties`)
+*   **JPA DDL Auto:** `update` (configured in `src/main/resources/application.properties`)
 
 ### REST API Endpoints
 
