@@ -37,8 +37,8 @@ The project has been transformed into a Spring Boot application acting as a Cert
         *   `commonName` (String, required): The common name for the new certificate.
         *   `validityDays` (long, optional, default: 365): The validity period in days.
 *   **DELETE `/certificates/{commonName}`**: (Handled by `JwtSigningController`) Deletes a certificate and its private key from `certs/generated.jks` based on the provided `commonName`.
-*   **POST `/certificates/sign-jwt`**: (Handled by `JwtSigningController`) Signs a set of JSON claims with the private key of a specified certificate and returns a complete JWS token.
-    *   **Request Body:**
+*   **POST `/certificates/sign-jwt`**: (Handled by `JwtSigningController`) Signs a set of JSON claims with the private key of a specified certificate and returns a complete JWS token. Upon execution, a record of the signing attempt (both successful and failed) is saved to the database and can be retrieved via the `/history` endpoint.
+    *   **Request Body:****
         ```json
         {
           "commonName": "your-certificate-common-name",
