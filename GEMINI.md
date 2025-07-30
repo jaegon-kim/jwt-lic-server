@@ -95,15 +95,25 @@ Automated integration tests using `MockMvc` have been implemented in `Applicatio
 ## How to Run
 
 1.  **Ensure `ca.jks` exists:** Make sure you have generated the `ca.jks` file in the `certs/` directory using the `keytool` command provided during the setup.
-2.  **Build the project:**
+2.  **Build the Spring Boot project:**
     ```bash
     ./gradlew clean build
     ```
-3.  **Run the application:**
+3.  **Run the Spring Boot application (Backend):**
     ```bash
     ./gradlew bootRun &
     ```
     (The `&` runs it in the background. You can check logs in `bootRun.log`.)
+4.  **Install Next.js frontend dependencies:**
+    ```bash
+    cd frontend
+    npm install
+    ```
+5.  **Run the Next.js frontend application:**
+    ```bash
+    npm run dev
+    ```
+    (This will typically run on `http://localhost:3000`)
 
 ## Next Steps / Resuming Work
 

@@ -224,4 +224,17 @@ Result:
 Sign history with ID 1 deleted successfully.
 ```
 
+# Run
+
+Executing Spring Boot Backend
+```declarative
+./gradlew clean build
+./gradlew bootRun &
 ```
+Backend runs on http://localhost:18080
+
+```declarative
+cd frontend
+npm run dev
+```
+Frontend runs on http://localhost
