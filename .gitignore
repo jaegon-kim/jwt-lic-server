@@ -5,6 +5,8 @@ build/
 !**/src/test/**/build/
 bootRun.log
 certs/generated.jks
+history.db
+*schema.json
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

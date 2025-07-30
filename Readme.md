@@ -61,7 +61,7 @@ Decoded Result
 }
 
 [Signature (Encoded)]
-ZTRVPxGvX7vu7k63qagCRMbnnDx9obHFCBf3Wx8Z3PrcLuEU15W3gr_Dw80dAHYBLYx5YuOF-YzgvZ7UCf9QuFfz3DT2IQZJXLXIVfIIkQjhjy7l_m02rP21bXU-FvFFGsGUC9TNo9aW3epjEYeRbzPpKCdPdgDjQVxoZrJD8SoydDemoi-IJDRjiPEtu5cYqyK9gYi0uzjvInRGxifsLdARreB-wXYW8uHoh3RaTLE0B7cgq9eQe-90U0Gcbti-AS4DIyUyRcyO8XkhwqtfFVEWF_bBuUwt6ml5R4L3TkR13j_rP_Ll7QNQe_Rez4HKXyRLKPJ5aOq6oh6-doSKQw
+ZTRVPxGvX7vu7k63qagCRMbnnDx9obHFCBf3Wx8Z3PrcLuEU15W3gr_Dw80dAHYBLYx5YuOF-YzgvZ7UCf9QuFfz3DT2IQZJXLXIVfIIkQjhjy7l_m02rP21bXU-FvFFGsGUC9TNo9aW3epjEYeRbzPpKCdPdgDjQVxoZrJD8SoydDemoi-IJDRjiPEtu5cYqyK9gYi0uzjvInRGxifsLdARreB-wXYW8uHoh3RaTLE0B7cgq9eQe-90U0Gcbti-AS4DIyUyRcyO8XkhwqtfFVEWF_bBuUwt6ml5R4L3TkR13j_rP_Ll2QNQe_Rez4HKXyRLKPJ5aOq6oh6-doSKQw
 
 Note: The signature is a cryptographic hash and is not decoded.
 --- End ---
@@ -188,3 +188,33 @@ $.apps: is missing but it is required
 $.expire: is missing but it is required
 ```
 
+## JWT Sign History API
+
+### Add a new JWT sign history record
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{"success": true, "originalJwt": "test.jwt.original", "signedJwtResult": "test.jwt.signed"}' http://localhost:18080/history
+```
+Result:
+```json
+{"id":1,"timestamp":"2025-07-28T14:46:14.633255921","success":true,"failureReason":null,"originalJwt":"test.jwt.original","signedJwtResult":"test.jwt.signed"}
+```
+
+### Retrieve all JWT sign history records
+```bash
+curl http://localhost:18080/history
+```
+Result:
+```json
+[{"id":1,"timestamp":"2025-07-28T14:46:14.633","success":true,"failureReason":null,"originalJwt":"test.jwt.original","signedJwtResult":"test.jwt.signed"}]
+```
+
+### Delete a JWT sign history record by ID
+```bash
+curl -X DELETE http://localhost:18080/history/1
+```
+Result:
+```
+Sign history with ID 1 deleted successfully.
+```
+
+```
