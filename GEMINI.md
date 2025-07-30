@@ -5,6 +5,14 @@ This document summarizes the current state and key changes made to the `hello_sp
 ## Project Overview
 The project has been transformed into a Spring Boot application acting as a Certificate Authority (CA) server. It can issue and manage X.509 certificates, and also sign JSON Web Tokens (JWTs) using the generated certificates' private keys.
 
+Key responsibilities are separated into distinct controllers:
+*   `CertificateController`: Handles all certificate management operations (generation, listing, deletion).
+*   `JwtSigningController`: Dedicated to signing JWTs.
+*   `JwtHistoryController`: Manages the history of JWT signing operations.
+*   `JwtSchemaController`: Manages JSON schemas for claim validation.
+
+Automated integration tests using `MockMvc` have been implemented in `ApplicationTests.java` to ensure the reliability of the main API workflows.
+
 ## Key Configurations and Features
 
 *   **Spring Boot Version:** 3.5.3
@@ -31,14 +39,22 @@ The project has been transformed into a Spring Boot application acting as a Cert
 ### REST API Endpoints
 
 *   **GET `/hi`**: Returns "Hello World". (Initial test endpoint)
-*   **GET `/certificates`**: (Handled by `JwtSigningController`) Lists all certificates currently stored in `certs/generated.jks`.
-*   **POST `/certificates/generate`**: (Handled by `JwtSigningController`) Generates a new certificate and its private key, storing them in `certs/generated.jks`.
+
+#### Certificate Management (`CertificateController`)
+
+*   **GET `/certificates`**: Lists all certificates currently stored in `certs/generated.jks`.
+*   **POST `/certificates/generate`**: Generates a new certificate and its private key, storing them in `certs/generated.jks`.
     *   **Parameters:**
         *   `commonName` (String, required): The common name for the new certificate.
         *   `validityDays` (long, optional, default: 365): The validity period in days.
-*   **DELETE `/certificates/{commonName}`**: (Handled by `JwtSigningController`) Deletes a certificate and its private key from `certs/generated.jks` based on the provided `commonName`.
-*   **POST `/certificates/sign-jwt`**: (Handled by `JwtSigningController`) Signs a set of JSON claims with the private key of a specified certificate and returns a complete JWS token. Upon execution, a record of the signing attempt (both successful and failed) is saved to the database and can be retrieved via the `/history` endpoint.
-    *   **Request Body:****
+*   **DELETE `/certificates/{commonName}`**: Deletes a certificate and its private key from `certs/generated.jks` based on the provided `commonName`.
+*   **GET `/certificates/ca-certificate/pem`**: Returns the CA's public key certificate in X.509/PEM format.
+*   **GET `/certificates/{commonName}/pem`**: Returns a generated certificate in X.509/PEM format based on the provided `commonName`.
+
+#### JWT Signing (`JwtSigningController`)
+
+*   **POST `/jwt/sign`**: Signs a set of JSON claims with the private key of a specified certificate and returns a complete JWS token. Upon execution, a record of the signing attempt (both successful and failed) is saved to the database and can be retrieved via the `/history` endpoint.
+    *   **Request Body:**
         ```json
         {
           "commonName": "your-certificate-common-name",
@@ -49,23 +65,25 @@ The project has been transformed into a Spring Boot application acting as a Cert
           }
         }
         ```
-*   **GET `/certificates/ca-certificate/pem`**: (Handled by `JwtSigningController`) Returns the CA's public key certificate in X.509/PEM format.
-*   **GET `/certificates/{commonName}/pem`**: (Handled by `JwtSigningController`) Returns a generated certificate in X.509/PEM format based on the provided `commonName`.
 
-*   **GET `/history`**: (Handled by `JwtHistoryController`) Lists all JWT signing history records.
-*   **POST `/history`**: (Handled by `JwtHistoryController`) Adds a new JWT signing history record.
+#### Signing History (`JwtHistoryController`)
+
+*   **GET `/history`**: Lists all JWT signing history records.
+*   **POST `/history`**: Adds a new JWT signing history record.
     *   **Request Body:** `JwtSignHistory` object.
-*   **DELETE `/history/{id}`**: (Handled by `JwtHistoryController`) Deletes a signing history record by its ID.
+*   **DELETE `/history/{id}`**: Deletes a signing history record by its ID.
 
-*   **POST `/schemas/{schemaName}`**: (Handled by `JwtSchemaController`) Stores a JSON schema definition for claims validation.
+#### Schema Management (`JwtSchemaController`)
+
+*   **POST `/schemas/{schemaName}`**: Stores a JSON schema definition for claims validation.
     *   **Parameters:**
         *   `schemaName` (String, required): The name to assign to the schema.
     *   **Request Body:** Raw JSON schema content.
-*   **GET `/schemas`**: (Handled by `JwtSchemaController`) Lists all stored JSON schema names.
-*   **GET `/schemas/{schemaName}`**: (Handled by `JwtSchemaController`) Retrieves a stored JSON schema definition.
+*   **GET `/schemas`**: Lists all stored JSON schema names.
+*   **GET `/schemas/{schemaName}`**: Retrieves a stored JSON schema definition.
     *   **Parameters:**
         *   `schemaName` (String, required): The name of the schema to retrieve.
-*   **DELETE `/schemas/{schemaName}`**: (Handled by `JwtSchemaController`) Deletes a stored JSON schema definition.
+*   **DELETE `/schemas/{schemaName}`**: Deletes a stored JSON schema definition.
     *   **Parameters:**
         *   `schemaName` (String, required): The name of the schema to delete.
 

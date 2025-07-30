@@ -41,8 +41,9 @@ curl -X POST -H "Content-Type: application/json" \
          "expire" : "2025/12/31"
        }
      }' \
-   http://localhost:18080/certificates/sign-jwt | xargs -0 python3 decode_jwt.py
+   http://localhost:18080/jwt/sign | xargs -0 python3 decode_jwt.py
 ```
+
 
 Decoded Result 
 ```
