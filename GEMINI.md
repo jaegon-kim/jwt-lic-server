@@ -52,6 +52,11 @@ The project has been transformed into a Spring Boot application acting as a Cert
 *   **GET `/certificates/ca-certificate/pem`**: (Handled by `JwtSigningController`) Returns the CA's public key certificate in X.509/PEM format.
 *   **GET `/certificates/{commonName}/pem`**: (Handled by `JwtSigningController`) Returns a generated certificate in X.509/PEM format based on the provided `commonName`.
 
+*   **GET `/history`**: (Handled by `JwtHistoryController`) Lists all JWT signing history records.
+*   **POST `/history`**: (Handled by `JwtHistoryController`) Adds a new JWT signing history record.
+    *   **Request Body:** `JwtSignHistory` object.
+*   **DELETE `/history/{id}`**: (Handled by `JwtHistoryController`) Deletes a signing history record by its ID.
+
 *   **POST `/schemas/{schemaName}`**: (Handled by `JwtSchemaController`) Stores a JSON schema definition for claims validation.
     *   **Parameters:**
         *   `schemaName` (String, required): The name to assign to the schema.
