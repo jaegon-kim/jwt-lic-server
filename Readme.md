@@ -70,12 +70,18 @@ Note: The signature is a cryptographic hash and is not decoded.
 ## Getting CA's certificate with X.509/PEM 
 ```
 curl http://localhost:18080/certificates/ca-certificate/pem
+```
+Decoded certificate
+```
 curl http://localhost:18080/certificates/ca-certificate/pem | openssl x509 -text -noout
 ```
 
 ## Getting generated certificate with X.509/PEM
 ```
 curl http://localhost:18080/certificates/test-jwt-cert/pem
+```
+Decoded certificate
+```
 curl http://localhost:18080/certificates/test-jwt-cert/pem | openssl x509 -text -noout
 ```
 
@@ -106,7 +112,7 @@ curl -X POST http://localhost:18080/schemas/test-jwt-claims-schema -H "Content-T
 
 ## Listing JWT claims schema 
 ```
-$ curl -X GET http://localhost:18080/schemas
+curl -X GET http://localhost:18080/schemas
 ```
 
 Result
@@ -116,7 +122,7 @@ Result
 
 ## Getting JWT claims schema
 ```
- curl -X GET http://localhost:18080/schemas/test-jwt-claims-schema
+curl -X GET http://localhost:18080/schemas/test-jwt-claims-schema
 ```
 Result
 ```

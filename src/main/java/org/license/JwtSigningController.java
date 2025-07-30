@@ -4,18 +4,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.security.cert.X509Certificate;
 import java.io.StringWriter;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.bouncycastle.util.io.pem.PemObject;
-import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Value;
 
 @RestController
-@RequestMapping
+@RequestMapping("/certificates")
 public class JwtSigningController {
 
     private final JwtSigningService jwtSigningService;
@@ -31,7 +29,7 @@ public class JwtSigningController {
         this.jwtSignHistoryRepository = jwtSignHistoryRepository;
     }
 
-    @PostMapping("/certificates/generate")
+    @PostMapping("/generate")
     public ResponseEntity<?> generateCertificate(@RequestParam String commonName, @RequestParam(defaultValue = "365") long validityDays) {
         try {
             JwtSigningService.CertificateInfo certInfo = jwtSigningService.generateAndSaveCertificate(commonName, validityDays);
@@ -43,13 +41,13 @@ public class JwtSigningController {
         }
     }
 
-    @GetMapping("/certificates")
+    @GetMapping
     public ResponseEntity<List<JwtSigningService.CertificateInfo>> getCertificates() {
         List<JwtSigningService.CertificateInfo> certs = jwtSigningService.getGeneratedCertificates();
         return ResponseEntity.ok(certs);
     }
 
-    @DeleteMapping("/certificates/{commonName}")
+    @DeleteMapping("/{commonName}")
     public ResponseEntity<?> deleteCertificate(@PathVariable String commonName) {
         try {
             jwtSigningService.deleteCertificate(commonName);
@@ -63,7 +61,7 @@ public class JwtSigningController {
         }
     }
 
-    @PostMapping("/certificates/sign-jwt")
+    @PostMapping("/sign-jwt")
     public ResponseEntity<?> signJwt(@RequestBody JwtSignRequest request) {
         try {
             String signedJwt = jwtSigningService.signJwt(request.getCommonName(), request.getClaims());
@@ -77,7 +75,7 @@ public class JwtSigningController {
         }
     }
 
-    @GetMapping("/certificates/ca-certificate/pem")
+    @GetMapping("/ca-certificate/pem")
     public ResponseEntity<?> getCaCertificatePem() {
         try {
             X509Certificate caCert = caService.getCaCertificate();
@@ -95,7 +93,7 @@ public class JwtSigningController {
         }
     }
 
-    @GetMapping("/certificates/{commonName}/pem")
+    @GetMapping("/{commonName}/pem")
     public ResponseEntity<?> getCertificatePem(@PathVariable String commonName) {
         try {
             X509Certificate cert = jwtSigningService.getCertificateByCommonName(commonName);
@@ -113,37 +111,4 @@ public class JwtSigningController {
         }
     }
 
-    // New API for JwtSignHistory
-    @GetMapping("/history")
-    public ResponseEntity<List<JwtSignHistory>> getAllSignHistory() {
-        List<JwtSignHistory> history = jwtSignHistoryRepository.findAll();
-        return ResponseEntity.ok(history);
-    }
-
-    @PostMapping("/history")
-    public ResponseEntity<JwtSignHistory> addSignHistory(@RequestBody JwtSignHistory history) {
-        // Check if the number of entries exceeds the maximum
-        long currentCount = jwtSignHistoryRepository.count();
-        if (currentCount >= maxEntries) {
-            // Find and delete the oldest entry
-            jwtSignHistoryRepository.findAll(Sort.by(Sort.Direction.ASC, "timestamp"))
-                                    .stream()
-                                    .findFirst()
-                                    .ifPresent(oldest -> jwtSignHistoryRepository.delete(oldest));
-        }
-
-        history.setTimestamp(LocalDateTime.now()); // Set timestamp on creation
-        JwtSignHistory savedHistory = jwtSignHistoryRepository.save(history);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedHistory);
-    }
-
-    @DeleteMapping("/history/{id}")
-    public ResponseEntity<?> deleteSignHistory(@PathVariable Long id) {
-        if (jwtSignHistoryRepository.existsById(id)) {
-            jwtSignHistoryRepository.deleteById(id);
-            return ResponseEntity.ok().body("Sign history with ID " + id + " deleted successfully.");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sign history with ID " + id + " not found.");
-        }
-    }
 }
