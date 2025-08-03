@@ -3,10 +3,10 @@
 This document summarizes the current state and key changes made to the `hello_springboot` project.
 
 ## Project Overview
-The project has been transformed into a Spring Boot application acting as a Certificate Authority (CA) server. It can issue and manage X.509 certificates, and also sign JSON Web Tokens (JWTs) using the generated certificates' private keys.
+The project has been transformed into a Spring Boot application acting as a Certificate Authority (CA) server, paired with a Next.js frontend for management. The backend can issue and manage X.509 certificates and sign JSON Web Tokens (JWTs). The frontend provides a user interface to interact with these features.
 
-Key responsibilities are separated into distinct controllers:
-*   `CertificateController`: Handles all certificate management operations (generation, listing, deletion).
+Key backend responsibilities are separated into distinct controllers:
+*   `CertificateController`: Handles all certificate management operations.
 *   `JwtSigningController`: Dedicated to signing JWTs.
 *   `JwtHistoryController`: Manages the history of JWT signing operations.
 *   `JwtSchemaController`: Manages JSON schemas for claim validation.
@@ -17,9 +17,11 @@ Automated integration tests using `MockMvc` have been implemented in `Applicatio
 
 *   **Spring Boot Version:** 3.5.3
 *   **Java Version:** 22
+*   **Frontend Framework:** Next.js with React and TypeScript
+*   **Styling:** Tailwind CSS
 *   **Main Package:** `org.license`
 *   **Server Port:** 18080 (configured in `src/main/resources/application.properties`)
-*   **Services:** `CaService`, `JwtSchemaService`, `JwtSigningService` (formerly `JwtCertificateService`)
+*   **Services:** `CaService`, `JwtSchemaService`, `JwtSigningService`
 *   **Database Driver:** `org.xerial:sqlite-jdbc` (SQLite JDBC Driver)
 
 ### CA Functionality
@@ -35,6 +37,27 @@ Automated integration tests using `MockMvc` have been implemented in `Applicatio
 *   **Type:** SQLite
 *   **File:** `db/history.db` (configured in `src/main/resources/application.properties`)
 *   **JPA DDL Auto:** `update` (configured in `src/main/resources/application.properties`)
+
+## Frontend: Certificate Management UI
+The frontend, located in the `frontend` directory, provides a comprehensive interface for managing certificates via the `/certificates` page.
+
+### Layout
+*   **Control Area:** A top bar containing action buttons (`New`, `Delete`).
+*   **Status Area:** The main content area, split into a certificate table and a details view.
+
+### Features
+*   **Certificate Table:**
+    *   Lists all available certificates, fetched from the `/certificates` backend API.
+    *   The table content automatically refreshes every 10 seconds.
+    *   **Pagination:** Displays 10 certificates per page with controls to navigate between pages.
+    *   **Multi-Select:** Allows selecting multiple certificates using checkboxes. A "select all" checkbox in the header is also provided.
+*   **Certificate Details:**
+    *   Clicking a row in the table opens a side panel displaying detailed information about the selected certificate.
+    *   This panel can be closed using an 'X' button.
+*   **Delete Functionality:**
+    *   The `Delete` button is enabled when at least one certificate is selected.
+    *   Clicking it opens a confirmation modal listing the certificates to be deleted.
+    *   Upon confirmation, it sends `DELETE` requests to the backend API for each selected certificate.
 
 ### REST API Endpoints
 
@@ -117,4 +140,4 @@ Automated integration tests using `MockMvc` have been implemented in `Applicatio
 
 ## Next Steps / Resuming Work
 
-You can continue developing by modifying existing files or adding new features. Refer to the API endpoints above for current functionality.
+You can continue developing by modifying existing files or adding new features. Refer to the API endpoints and frontend features above for current functionality.
