@@ -19,7 +19,7 @@ Automated integration tests using `MockMvc` have been implemented in `Applicatio
 *   **Java Version:** 22
 *   **Main Package:** `org.license`
 *   **Server Port:** 18080 (configured in `src/main/resources/application.properties`)
-*   **Services:** `JwtSigningService` (formerly `JwtCertificateService`)
+*   **Services:** `CaService`, `JwtSchemaService`, `JwtSigningService` (formerly `JwtCertificateService`)
 *   **Database Driver:** `org.xerial:sqlite-jdbc` (SQLite JDBC Driver)
 
 ### CA Functionality
@@ -33,7 +33,7 @@ Automated integration tests using `MockMvc` have been implemented in `Applicatio
 
 ### Database Configuration
 *   **Type:** SQLite
-*   **File:** `test.db` (configured in `src/main/resources/application.properties`)
+*   **File:** `db/history.db` (configured in `src/main/resources/application.properties`)
 *   **JPA DDL Auto:** `update` (configured in `src/main/resources/application.properties`)
 
 ### REST API Endpoints

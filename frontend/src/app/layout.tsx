@@ -39,6 +39,11 @@ export default function RootLayout({
               </Link>
             </li>
             <li>
+              <Link href="/schema" className="text-white hover:text-gray-300">
+                Schema
+              </Link>
+            </li>
+            <li>
               <Link href="/license" className="text-white hover:text-gray-300">
                 License
               </Link>
@@ -48,11 +53,7 @@ export default function RootLayout({
                 History
               </Link>
             </li>
-            <li>
-              <Link href="/schema" className="text-white hover:text-gray-300">
-                Schema
-              </Link>
-            </li>
+
           </ul>
         </nav>
         <div className="p-4">
